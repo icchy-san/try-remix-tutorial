@@ -25,6 +25,7 @@ export const TextField: FC<TextFieldProps> = ({
       <input
         type={type}
         id={htmlFor}
+        name={htmlFor}
         className={css({
           width: '100%',
           padding: 2,
@@ -33,7 +34,7 @@ export const TextField: FC<TextFieldProps> = ({
       />
       {error && (
         <span className={css({ color: 'red.500', marginBottom: 2 })}>
-          {errorMessage}
+          {error}
         </span>
       )}
       {errorMessage && (

@@ -36,7 +36,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const LoginPage = () => {
   return (
     <div className={loginPageBaseStyles}>
-      <div className={css({rounded: '2xl', bg: 'white', padding: 6, width: '420px'})}>
+      <div
+        className={css({
+          rounded: '2xl',
+          bg: 'white',
+          padding: 6,
+          width: '420px',
+        })}
+      >
         <ValidatedForm validator={loginValidator} method='POST'>
           <h2
             className={css({
