@@ -8,5 +8,27 @@
 		"rules": {
 			"recommended": true
 		}
+	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false,
+		"ignore": [],
+		"indentWidth": 2,
+		"indentStyle": "space",
+		"lineWidth": 80
+	},
+	"javascript": {
+		"formatter": {
+			"enabled": true,
+			"quoteStyle": "single",
+			"jsxQuoteStyle": "single",
+			"trailingComma": "all",
+			"semicolons": "asNeeded",
+			"arrowParentheses": "asNeeded",
+			"indentWidth": 2,
+			"indentStyle": "space",
+			"lineWidth": 80,
+			"quoteProperties": "asNeeded"
+		}
 	}
 }
