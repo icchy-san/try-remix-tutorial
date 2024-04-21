@@ -10,6 +10,7 @@ export const GoogleForm = () => {
         name='_action'
         value='Sign In Google'
         className={css({
+          display: 'flex',
           flexDir: 'row',
           width: '100%',
           rounded: 'xl',

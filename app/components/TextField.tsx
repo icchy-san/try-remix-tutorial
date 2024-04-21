@@ -9,6 +9,12 @@ type TextFieldProps = Readonly<{
   errorMessage?: string
 }>
 
+const textFieldStyles = css({
+  width: '100%',
+  padding: 2,
+  borderColor: 'gray.300',
+})
+
 export const TextField: FC<TextFieldProps> = ({
   htmlFor,
   label,
@@ -26,11 +32,7 @@ export const TextField: FC<TextFieldProps> = ({
         type={type}
         id={htmlFor}
         name={htmlFor}
-        className={css({
-          width: '100%',
-          padding: 2,
-          borderColor: 'gray.300',
-        })}
+        className={textFieldStyles}
       />
       {error && (
         <span className={css({ color: 'red.500', marginBottom: 2 })}>
