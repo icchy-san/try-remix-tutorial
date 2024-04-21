@@ -18,6 +18,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     failureRedirect: '/auth/login',
   })
 
+  console.log(user)
+
   return user
 }
 
@@ -36,14 +38,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 }
 
 const Index = () => {
-  const { name } = useLoaderData<typeof loader>()
+  const { user, provider, name } = useLoaderData<typeof loader>()
 
   return (
     <>
-      <h1>Name: {name}</h1>
+      <h1>Name: {name ?? 'No Name'}</h1>
       <div>
         <h2>Tutorial Application</h2>
-        {name ? (
+        {provider ?? user.id ? (
           <Form method='POST'>
             <button type='submit' name='action' value='logout'>
               Logout
