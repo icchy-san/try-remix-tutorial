@@ -3,7 +3,6 @@ import {
   ActionFunctionArgs,
   LoaderFunctionArgs,
   MetaFunction,
-  redirect,
 } from '@remix-run/node'
 import { css } from 'styled-system/css'
 import { ValidatedForm } from 'remix-validated-form'
@@ -106,7 +105,7 @@ const LoginPage = () => {
         </ValidatedForm>
         <GoogleForm />
         <p className={css({ color: 'gray.600' })}>
-          Don't have an account?
+          Don&apos;t have an account?
           <Link to='/auth/signup'>
             <span
               className={css({
