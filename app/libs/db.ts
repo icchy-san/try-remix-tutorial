@@ -5,9 +5,10 @@ const prismaClientSingleton = () => {
 }
 
 declare global {
-  var prisma: ReturnType<typeof prismaClientSingleton> | undefined
+  let prisma: ReturnType<typeof prismaClientSingleton> | undefined
 }
 
+// biome-ignore lint/suspicious/noRedeclare: It is written in the official documentation
 export const prisma = globalThis.prisma ?? prismaClientSingleton()
 
 if (process.env.NODE_ENV !== 'production') {
