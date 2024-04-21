@@ -1,10 +1,15 @@
 import { authenticator } from '~/services/auth.server'
-import { LoaderFunctionArgs, MetaFunction } from '@remix-run/node'
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from '@remix-run/node'
 import { css } from 'styled-system/css'
 import { ValidatedForm } from 'remix-validated-form'
 import { loginValidator } from '~/types/validators/LoginValidator'
 import { TextField } from '~/components/TextField'
 import { Link } from '@remix-run/react'
+import { GoogleForm } from '~/components/GoogleForm'
 
 export const meta: MetaFunction = () => {
   return [{ title: 'New Remix App Login' }]
@@ -18,11 +23,26 @@ const loginPageBaseStyles = css({
   rowGap: 5,
 })
 
-export const action = async ({ request }: LoaderFunctionArgs) => {
-  return authenticator.authenticate('user-pass', request, {
-    successRedirect: '/',
-    failureRedirect: '/auth/login',
-  })
+export const action = async ({ request }: ActionFunctionArgs) => {
+  try {
+    const formData = await request.clone().formData()
+    const action = String(formData.get('_action'))
+    console.log(action)
+
+    switch (action) {
+      case 'Sign In':
+        return authenticator.authenticate('user-pass', request, {
+          successRedirect: '/',
+          failureRedirect: '/auth/login',
+        })
+      case 'Sign In Google':
+        return authenticator.authenticate('google', request)
+      default:
+        return null
+    }
+  } catch (error) {
+    return new Response(`An error occurred: ${error}`, { status: 500 })
+  }
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -36,8 +56,19 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 const LoginPage = () => {
   return (
     <div className={loginPageBaseStyles}>
-      <div className={css({rounded: '2xl', bg: 'white', padding: 6, width: '420px'})}>
-        <ValidatedForm validator={loginValidator} method='POST'>
+      <div
+        className={css({
+          rounded: '2xl',
+          bg: 'white',
+          padding: 6,
+          width: '420px',
+        })}
+      >
+        <ValidatedForm
+          validator={loginValidator}
+          method='POST'
+          action='/auth/login'
+        >
           <h2
             className={css({
               fontSize: '3xl',
@@ -72,8 +103,9 @@ const LoginPage = () => {
             </button>
           </div>
         </ValidatedForm>
+        <GoogleForm />
         <p className={css({ color: 'gray.600' })}>
-          Don't have an account?
+          Don&apos;t have an account?
           <Link to='/auth/signup'>
             <span
               className={css({

@@ -36,3 +36,11 @@ Make sure to deploy the output of `remix build`
 
 - `build/server`
 - `build/client`
+
+## Migration
+
+Run the migration for the first time.
+
+```shell
+$ bunx prisma migrate dev --name init
+```
