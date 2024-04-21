@@ -1,5 +1,10 @@
-import type { MetaFunction } from '@remix-run/node'
-import { css } from 'styled-system/css'
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  MetaFunction,
+} from '@remix-run/node'
+import { Form, useLoaderData } from '@remix-run/react'
+import { authenticator } from '~/services/auth.server'
 
 export const meta: MetaFunction = () => {
   return [
@@ -8,14 +13,46 @@ export const meta: MetaFunction = () => {
   ]
 }
 
-export default function Index() {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: '/auth/login',
+  })
+
+  return user
+}
+
+export const action = async ({ request }: ActionFunctionArgs) => {
+  const data = await request.formData()
+  const action = data.get('action')
+
+  switch (action) {
+    case 'logout': {
+      return await authenticator.logout(request, { redirectTo: '/auth/login' })
+    }
+
+    default:
+      return null
+  }
+}
+
+const Index = () => {
+  const { name } = useLoaderData<typeof loader>()
+
   return (
-    <div>
-      <div
-        className={css({ fontSize: '4xl', fontWeight: 'bold', color: 'red' })}
-      >
-        Hello 🐼!
+    <>
+      <h1>Name: {name}</h1>
+      <div>
+        <h2>Tutorial Application</h2>
+        {name ? (
+          <Form method='POST'>
+            <button type='submit' name='action' value='logout'>
+              Logout
+            </button>
+          </Form>
+        ) : null}
       </div>
-    </div>
+    </>
   )
 }
+
+export default Index

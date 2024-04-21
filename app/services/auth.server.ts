@@ -4,6 +4,7 @@ import { Authenticator, AuthorizationError } from 'remix-auth'
 import { sessionStorage } from './session.server'
 import { FormStrategy } from 'remix-auth-form'
 import { prisma } from '~/libs/db'
+import { GoogleStrategy } from 'remix-auth-google'
 
 const SESSION_SECRET = process.env.SESSION_SECRET
 
@@ -39,5 +40,48 @@ const formStrategy = new FormStrategy(async ({ form }) => {
 })
 
 authenticator.use(formStrategy, 'user-pass')
+
+if (
+  !(
+    process.env.GOOGLE_CLIENT_ID &&
+    process.env.GOOGLE_CLIENT_SECRET &&
+    process.env.CLIENT_URL
+  )
+) {
+  throw new Error(
+    'GOOGLE_CLIENT_ID、GOOGLE_CLIENT_SECRET、CLIENT_URLが設定されていません。',
+  )
+}
+
+const googleStrategy = new GoogleStrategy<User>(
+  {
+    clientID: process.env.GOOGLE_CLIENT_ID || '',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+    callbackURL: `${process.env.CLIENT_URL}/api/auth/google/callback`,
+  },
+  async ({ profile }) => {
+    const user = await prisma.user.findUnique({
+      where: { email: profile.emails[0].value },
+    })
+
+    if (user) {
+      return user
+    }
+
+    const newUser = await prisma.user.create({
+      data: {
+        id: profile.id,
+        email: profile.emails[0].value || '',
+        password: '',
+        name: profile.displayName,
+        provider: 'google',
+      },
+    })
+
+    return newUser
+  },
+)
+
+authenticator.use(googleStrategy)
 
 export { authenticator }
