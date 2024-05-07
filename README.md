@@ -45,3 +45,4 @@ Run the migration for the first time.
 ```shell
 $ bunx prisma migrate dev --name init
 ```
+
